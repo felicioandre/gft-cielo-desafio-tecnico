@@ -10,7 +10,7 @@ import { parseJSON } from 'date-fns'
 })
 export class AppComponent implements OnInit {
   public mainInformationData: ICard[] = [];
-  public lastUpdate: Date = new Date()
+  public lastUpdate: Date
   constructor(private dataServ: DataService) {}
 
   ngOnInit() {

@@ -9,7 +9,7 @@
         <app-card [content]="mainInfo"></app-card>
       </div>
     </div>
-    <p class="last-update">
+    <p class="last-update" *ngIf="lastUpdate">
       Última atualização em:
       <time >{{lastUpdate| date:'dd/MM/yyyy'}} às {{lastUpdate| date:'HH:mm'}}</time>
     </p>

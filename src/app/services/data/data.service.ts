@@ -20,8 +20,8 @@ export class DataService {
     this.covid19ApiUrl = Constants.COVID19_API_URL;
 
     // if(!environment.production){
-      this.bingApiUrl = 'http://cors-anywhere.herokuapp.com/' + this.bingApiUrl;
-      this.covid19ApiUrl = 'http://cors-anywhere.herokuapp.com/' + this.covid19ApiUrl;
+      this.bingApiUrl = 'https://cors-anywhere.herokuapp.com/' + this.bingApiUrl;
+      this.covid19ApiUrl = 'https://cors-anywhere.herokuapp.com/' + this.covid19ApiUrl;
     // }
   }
 
