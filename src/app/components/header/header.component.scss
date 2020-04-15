@@ -1,0 +1,22 @@
+header {
+  margin: 0 0 20px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background-color: #f6f6f6;
+  border-bottom: #eaeaea 1px solid;
+
+  h1, h2{
+    font-family: var(--font-secondary);
+    font-weight: 800;
+    margin: 0;
+  }
+
+  h2{
+      font-weight: 500;
+
+      @media screen and (max-width:991px){
+        max-width: 500px;
+        margin: 0 auto;
+      }
+  }
+}

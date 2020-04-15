@@ -1,0 +1,45 @@
+aside {
+  width: 100%;
+  position: relative;
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  overflow: hidden;
+  text-align: right;
+  margin-bottom: 1rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    right: 0px;
+    height: 3px;
+  }
+
+  &.type-warning::after {
+    background-color: var(--color-warning);
+  }
+  &.type-danger::after {
+    background-color: var(--color-danger);
+  }
+  &.type-info::after {
+    background-color: var(--color-info);
+  }
+  &.type-success::after {
+    background-color: var(--color-success);
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+    font-family: var(--font-secondary);
+  }
+
+  h2 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 300;
+  }
+}
