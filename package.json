@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -27,6 +27,7 @@
     "chart.js": "^2.9.3",
     "date-fns": "^2.12.0",
     "date-fns-tz": "^1.0.10",
+    "express": "^4.17.1",
     "ng2-charts": "^2.3.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
