@@ -31,45 +31,14 @@ export class AppComponent implements OnInit {
     const dataCountry = await this.dataServ.getInformationFromCountry('brazil');
     this.mainChartData = { ...dataCountry };
   }
-  
+
   private getMainData() {
-    this.dataServ.getMainInformation().subscribe((ret) => {
-      this.manipulateData(ret);
-    });
+    this.dataServ.getMainInformation().subscribe((ret) => this.fillData(ret));
   }
 
-  private manipulateData(data) {
-    this.mainInformationData = [];
-
-    const { totalConfirmed, totalDeaths, totalRecovered, lastUpdated } = data;
-    this.lastUpdate = parseJSON(lastUpdated);
-
-    this.mainInformationData.push({
-      description: 'Total de Casos',
-      smallDescription: 'Total',
-      title: totalConfirmed,
-      type: 'warning',
-    });
-
-    this.mainInformationData.push({
-      description: 'Total de Casos Ativos',
-      smallDescription: 'Ativos',
-      title: totalConfirmed - (totalRecovered + totalDeaths),
-      type: 'info',
-    });
-
-    this.mainInformationData.push({
-      description: 'Total de Recuperações',
-      smallDescription: 'Recuperações',
-      title: totalRecovered,
-      type: 'success',
-    });
-
-    this.mainInformationData.push({
-      description: 'Total de Mortes',
-      smallDescription: 'Mortes',
-      title: totalDeaths,
-      type: 'danger',
-    });
+  private fillData(data) {
+    const { data: content, lastUpdate } = data;
+    this.lastUpdate = lastUpdate;
+    this.mainInformationData = content;
   }
 }

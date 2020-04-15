@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { parseJSON } from 'date-fns';
 import { zonedTimeToUtc, utcToZonedTime, format } from 'date-fns-tz';
 import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
 import { HttpService } from '../http/http.service';
 import { Constants } from '../../enums/constants.enum';
 import { IChart } from '../../interfaces/IChart';
@@ -18,12 +20,77 @@ export class DataService {
   constructor(private httpServ: HttpService) {
     this.covid19ApiUrl = Constants.COVID19_API_URL;
 
-    this.bingApiUrl =
-      'https://cors-anywhere.herokuapp.com/' + Constants.BING_API_URL;
+    this.bingApiUrl = Constants.BING_API_URL;
   }
 
   public getMainInformation(): Observable<any> {
-    return this.httpServ.getData(this.bingApiUrl);
+    return this.httpServ.getData(this.bingApiUrl).pipe(
+      map((data) => {
+        return this.manipulateMainData(data);
+      }),
+      catchError((err) => {
+        return this.getMainInformationOtherSource();
+      })
+    );
+  }
+
+  private getMainInformationOtherSource(): Observable<any> {
+    return this.httpServ.getData(this.covid19ApiUrl + 'summary').pipe(
+      map((data) => {
+        return this.manipulateMainData(data, false);
+      })
+    );
+  }
+
+  private manipulateMainData(data, sourceBing = true) {
+    
+    let lastUpdate, totalConfirmed, totalDeaths, totalRecovered, finalData;
+
+    if (sourceBing) {
+      lastUpdate = parseJSON(data.lastUpdated);
+      totalConfirmed = data.totalConfirmed;
+      totalDeaths = data.totalDeaths;
+      totalRecovered = data.totalRecovered;
+    } else {
+      lastUpdate = parseJSON(data.Date);
+      totalConfirmed = data.Global.TotalConfirmed;
+      totalDeaths = data.Global.TotalDeaths;
+      totalRecovered = data.Global.TotalRecovered;
+    }
+    finalData = {
+      lastUpdate,
+      data: [],
+    };
+
+    finalData.data.push({
+      description: 'Total de Casos',
+      smallDescription: 'Total',
+      title: totalConfirmed,
+      type: 'warning',
+    });
+
+    finalData.data.push({
+      description: 'Total de Casos Ativos',
+      smallDescription: 'Ativos',
+      title: totalConfirmed - (totalRecovered + totalDeaths),
+      type: 'info',
+    });
+
+    finalData.data.push({
+      description: 'Total de Recuperações',
+      smallDescription: 'Recuperações',
+      title: totalRecovered,
+      type: 'success',
+    });
+
+    finalData.data.push({
+      description: 'Total de Mortes',
+      smallDescription: 'Mortes',
+      title: totalDeaths,
+      type: 'danger',
+    });
+
+    return finalData;
   }
 
   public getInformationFromCountry(country: string): Promise<IChart> {
