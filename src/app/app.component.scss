@@ -3,4 +3,12 @@
     font-style: italic;
     text-align: right;
     margin: 0;
+
+    @media screen and (max-width: 575px){
+        text-align: center;
+    }
+
+    time{
+        display: inline-block;
+    }
 }
