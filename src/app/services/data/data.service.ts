@@ -19,10 +19,10 @@ export class DataService {
     this.bingApiUrl = Constants.BING_API_URL;
     this.covid19ApiUrl = Constants.COVID19_API_URL;
 
-    if(!environment.production){
+    // if(!environment.production){
       this.bingApiUrl = 'http://cors-anywhere.herokuapp.com/' + this.bingApiUrl;
       this.covid19ApiUrl = 'http://cors-anywhere.herokuapp.com/' + this.covid19ApiUrl;
-    }
+    // }
   }
 
   public getMainInformation(): Observable<any>{
