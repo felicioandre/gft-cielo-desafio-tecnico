@@ -20,34 +20,32 @@ export class DataService {
 
     this.bingApiUrl =
       'https://cors-anywhere.herokuapp.com/' + Constants.BING_API_URL;
-
-    
   }
 
   public getMainInformation(): Observable<any> {
-    const ret = this.httpServ.getData(this.bingApiUrl);
-    return ret;
+    return this.httpServ.getData(this.bingApiUrl);
   }
 
   public getInformationFromCountry(country: string): Promise<IChart> {
     return new Promise((resolve, reject) => {
       this.httpServ
-        .getData(this.covid19ApiUrl + `country/${country}`)
+        .getData(this.covid19ApiUrl + `dayone/country/${country}`)
         .subscribe((data: any[]) => {
           const labels: Label[] = [];
-          const deathValues: ChartDataSets = {
-            data: [],
-            label: 'Mortes',
-            backgroundColor: 'rgba(235, 69, 89,0.2)',
-            borderColor: 'rgba(235, 69, 89,1)',
-            pointBackgroundColor: 'rgba(235, 69, 89,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(235, 69, 89,0.8)',
-          };
           const confirmedValues: ChartDataSets = {
             data: [],
-            label: 'Confirmados',
+            label: 'Total',
+            backgroundColor: 'rgba(247, 130, 89,0.2)',
+            borderColor: 'rgba(247, 130, 89,1)',
+            pointBackgroundColor: 'rgba(247, 130, 89,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(247, 130, 89,0.8)',
+          };
+
+          const activeValues: ChartDataSets = {
+            data: [],
+            label: 'Ativos',
             backgroundColor: 'rgba(0, 188, 212,0.2)',
             borderColor: 'rgba(0, 188, 212,1)',
             pointBackgroundColor: 'rgba(0, 188, 212,1)',
@@ -66,25 +64,36 @@ export class DataService {
             pointHoverBorderColor: 'rgba(76, 211, 194,0.8)',
           };
 
+          const deathValues: ChartDataSets = {
+            data: [],
+            label: 'Mortes',
+            backgroundColor: 'rgba(235, 69, 89,0.2)',
+            borderColor: 'rgba(235, 69, 89,1)',
+            pointBackgroundColor: 'rgba(235, 69, 89,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(235, 69, 89,0.8)',
+          };
+
           const values = data.length > 10 ? data.slice(data.length - 10) : data;
 
           values.forEach((val) => {
             // labels
             const date = utcToZonedTime(val.Date, '');
             labels.push(format(date, 'dd/MM'));
-
+            const actives = val.Confirmed - (val.Recovered + val.Deaths);
+            activeValues.data.push(actives);
             deathValues.data.push(val.Deaths);
             confirmedValues.data.push(val.Confirmed);
             recoveredValues.data.push(val.Recovered);
           });
 
           const chartData: IChart = {
-            data: [deathValues, confirmedValues, recoveredValues],
+            data: [confirmedValues, activeValues, recoveredValues, deathValues],
             labels,
           };
           resolve(chartData);
         });
     });
   }
-
 }
