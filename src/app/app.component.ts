@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from './services/data/data.service';
 import { ICard } from './interfaces/ICard';
-import { parseJSON } from 'date-fns'
+import { parseJSON } from 'date-fns';
+import { IChart } from './interfaces/IChart';
+
+// import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +13,27 @@ import { parseJSON } from 'date-fns'
 })
 export class AppComponent implements OnInit {
   public mainInformationData: ICard[] = [];
-  public lastUpdate: Date
+  public mainChartData: IChart;
+  public lastUpdate: Date;
+
   constructor(private dataServ: DataService) {}
 
-  ngOnInit() {
-    this.getList();
+  async ngOnInit() {
+    this.getMainData();
+    await this.getDataFromCountry();
   }
 
-  getList() {
+  public get loading() {
+    return this.mainInformationData.length === 0 || !this.mainChartData;
+  }
+
+  private async getDataFromCountry() {
+    const dataCountry = await this.dataServ.getInformationFromCountry('brazil');
+    this.mainChartData = { ...dataCountry };
+  }
+  
+  private getMainData() {
     this.dataServ.getMainInformation().subscribe((ret) => {
-      // console.log({ ret });
       this.manipulateData(ret);
     });
   }
@@ -28,8 +42,7 @@ export class AppComponent implements OnInit {
     this.mainInformationData = [];
 
     const { totalConfirmed, totalDeaths, totalRecovered, lastUpdated } = data;
-
-    this.lastUpdate = parseJSON(lastUpdated)
+    this.lastUpdate = parseJSON(lastUpdated);
 
     this.mainInformationData.push({
       description: 'Total de Casos',

@@ -3,7 +3,8 @@
     titleInfo="COVID19"
     description="Um painel para acompanhar os dados em tempo real"
   ></app-header>
-  <div class="container">
+  <div class="container" [hidden]="loading">
+    <h4 class="text-center">Dados mundiais</h4>
     <div class="row">
       <div class="col-6 col-md-3" *ngFor="let mainInfo of mainInformationData">
         <app-card [content]="mainInfo"></app-card>
@@ -11,10 +12,17 @@
     </div>
     <p class="last-update" *ngIf="lastUpdate">
       Última atualização em:
-      <time
-        >{{ lastUpdate | date: "dd/MM/yyyy" }} às
-        {{ lastUpdate | date: "HH:mm" }}</time
-      >
+      <time>
+        {{ lastUpdate | date: "dd/MM/yyyy" }} às
+        {{ lastUpdate | date: "HH:mm" }}
+      </time>
     </p>
+    <hr />
+    <div *ngIf="mainChartData">
+      <h4 class="text-center">Dados no Brasil <small>(nos últimos 10 dias)</small></h4>
+      <app-chart [data]="mainChartData"></app-chart>
+    </div>
   </div>
 </div>
+
+<app-loading *ngIf="loading"></app-loading>
